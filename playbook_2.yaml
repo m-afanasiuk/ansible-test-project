@@ -48,6 +48,6 @@
         # Controller connection
         controller_host: "{{ controller_host }}"
         validate_certs: "{{ controller_verify_ssl }}"
-        controller_oauthtoken: {{ controller_oauthtoken | default('') }}
+        controller_oauthtoken: "{{ controller_oauthtoken | default('') }}"
         controller_username: "{{ controller_username | default('') }}"
         controller_password: "{{ controller_password | default('') }}"
