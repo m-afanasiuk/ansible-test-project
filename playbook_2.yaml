@@ -46,7 +46,7 @@
         state: "{{ ct.state | default('present') }}"
 
         # Controller connection
-        controller_host: "{{ controller_host }}"
+        controller_host: "{{ controller_host | lookup('pipe', 'hostname') }}"
         validate_certs: "{{ controller_verify_ssl }}"
         controller_oauthtoken: "{{ controller_oauthtoken | default('') }}"
         controller_username: "{{ controller_username | default('') }}"
