@@ -1,0 +1,46 @@
+---
+- name: Create AAP credential types (single-task)
+  hosts: localhost
+  gather_facts: false
+  collections:
+    - keepersecurity.keeper_secrets_manager
+    - awx.awx
+
+  tasks:
+    - name: Ensure credential types
+      vars:
+        # Inline "vars" moved here
+        aap_credential_types:
+          - name: "Keeper Secrets Manager"
+            description: "Keeper Secrets Manager access"
+            kind: "vault"
+            state: "present"
+            inputs:
+              fields:
+                - id: keeper_config
+                  type: string
+                  label: "Keeper Config (Base)"
+                  secret: true
+                - id: ksm_profile
+                  type: string
+                  label: "KSM Profile Name"
+                  help_text: "Optional. Defaults to 'default'"
+              required:
+                - keeper_config
+            injectors:
+              extra_vars:
+                keeper_config: !unsafe "{{ keeper_config }}"
+                ksm_profile: !unsafe "{{ ksm_profile | default('default') }}"
+
+      loop: "{{ aap_credential_types | default([]) }}"
+      loop_control:
+        loop_var: ct
+        label: "{{ ct.name }}"
+
+      awx.awx.credential_type:
+        name: "{{ ct.name }}"
+        description: "{{ ct.description | default(omit) }}"
+        kind: "{{ ct.kind | default('cloud') }}"
+        inputs: "{{ ct.inputs | default({}) }}"
+        injectors: "{{ ct.injectors | default({}) }}"
+        state: "{{ ct.state | default('present') }}"
