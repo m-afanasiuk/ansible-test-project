@@ -7,6 +7,14 @@
     - awx.awx
 
   tasks:
+  - name: Get controller hostname
+    set_fact:
+      controller_host: "{{ lookup('pipe', 'hostname') }}"
+
+  - name: Debug controller hostname
+    debug:
+      msg: "Controller hostname: {{ controller_host }}"
+
     - name: Ensure credential types
       vars:
         # Inline "vars" moved here
