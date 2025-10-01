@@ -1,6 +1,14 @@
 - name: Playbook One
   hosts: localhost
   tasks:
+    - name: Get keeper SDK version
+      ansible.builtin.command: pip show keeper-secrets-manager-core
+      register: keeper_sdk_version
+
+    - name: Print keeper SDK version
+      ansible.builtin.debug:
+        var: keeper_sdk_version.stdout
+
     - name: Get collection versions
       ansible.builtin.command: ansible-galaxy collection list keepersecurity.keeper_secrets_manager
       register: keeper_version
